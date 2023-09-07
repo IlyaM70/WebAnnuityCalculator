@@ -1,0 +1,48 @@
+﻿@model ResultViewModel
+@{
+    ViewData["Title"] = "Результат";
+}
+
+<h1 class="text-center">@ViewData["Title"]</h1>
+<div class="container-xl mt-3">
+    <a asp-action="Index" asp-controller="Home" class="link-primary">Назад</a>
+    <table class="mt-3 table table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">№</th>
+                <th scope="col">Дата платежа</th>
+                <th scope="col">Сумма платежа</th>
+                <th scope="col">Основной долг</th>
+                <th scope="col">Проценты</th>
+                <th scope="col">Остаток долга</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Payments)
+            {
+                <tr>
+                    <th scope="row">@{int number = Model.Payments.IndexOf(item) + 1;} @number</th>
+                    <td>@item.Date</td>
+                    <td>@item.AnnuityPayment.ToString("0.00")</td>
+                    <td>@item.BodyPayment.ToString("0.00")</td>
+                    <td>@item.InterestPayment.ToString("0.00")</td>
+                    <td>@item.LoanBalance.ToString("0.00")</td>
+                </tr>
+            }
+
+            <tr>
+                <th scope="row"></th>
+                <td></td>
+                <td>@Model.TotalPayments.ToString("0.00")</td>
+                <td>@Model.TotalBody.ToString("0.00")</td>
+                <td>@Model.TotalInterest.ToString("0.00")</td>
+                <td></td>
+            </tr>
+
+        </tbody>
+    </table>
+</div>
+
+
+
+

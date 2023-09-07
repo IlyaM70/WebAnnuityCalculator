@@ -1,0 +1,102 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
+using WebAnnuityCalculator.Models;
+
+namespace WebAnnuityCalculator.Controllers
+{
+    public class HomeController : Controller
+    {
+        public HomeController()
+        {
+
+        }
+
+        [HttpGet]
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Index(InputDataViewModel inputData)
+        {
+            if(ModelState.IsValid)
+            {
+                return RedirectToAction("Result", inputData);
+            }
+            
+            return View(inputData);
+        }
+
+        public IActionResult Result(InputDataViewModel inputData)
+        {
+            List<Payment> payments = new List<Payment>();
+
+            decimal loanAmount = inputData.LoanAmount;
+            // Годовая процентная ставка
+            double yearlyInterest = inputData.LoanRate / 100;
+            // Месячная процентная ставка по кредиту 
+            double mounthlyInterest = yearlyInterest / 12;
+            // Количество периодов, в течение которых выплачивается кредит.
+            int paymentsNumber = inputData.LoanTerm;
+
+
+            // Коэффициент аннуитета
+            double annuityRatio = mounthlyInterest +
+                (mounthlyInterest / ((Math.Pow(1 + mounthlyInterest, paymentsNumber)) - 1));
+
+
+            // Ежемесячный аннуитетный платёж
+            decimal annuityPayment = Convert.ToDecimal(annuityRatio) * loanAmount;
+
+            // Остаток задолженности 
+            decimal loanBalance = loanAmount*(1 + Convert.ToDecimal(mounthlyInterest));
+
+            ResultViewModel result = new ResultViewModel();
+
+            for (int i = 0; i < paymentsNumber; i++)
+            {
+                // если остаток меньше месячного платежа
+                if (loanBalance < annuityPayment)
+                {
+                   annuityPayment = loanBalance;
+                }
+
+                Payment payment = new Payment();
+                // Начисленные проценты
+                payment.InterestPayment = (loanBalance * Convert.ToDecimal(yearlyInterest)) / 12;
+                // Часть выплаты, идущая на погашение основного долга
+                payment.BodyPayment = annuityPayment - payment.InterestPayment;
+
+                loanBalance = loanBalance - annuityPayment;
+                payment.LoanBalance = loanBalance;
+                payment.Date = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(i+1));
+                payment.AnnuityPayment = annuityPayment;
+                payments.Add(payment);
+
+                result.TotalPayments += payment.AnnuityPayment;
+                result.TotalInterest += payment.InterestPayment;
+                result.TotalBody += payment.BodyPayment;
+            }
+
+            result.Payments = payments;
+
+            return View(result);
+        }
+
+
+
+        public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+    }
+
+
+}
