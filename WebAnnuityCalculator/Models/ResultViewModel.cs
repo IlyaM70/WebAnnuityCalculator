@@ -4,8 +4,7 @@
     {
         public List<Payment> Payments { get; set; }
         public decimal TotalPayments { get; set; }
-        public decimal TotalInterest { get;  set; }
-        public decimal TotalBody { get; set; }
+        public decimal Overpayment { get;  set; }
 
         public ResultViewModel()
         {

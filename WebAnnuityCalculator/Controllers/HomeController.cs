@@ -44,7 +44,7 @@ namespace WebAnnuityCalculator.Controllers
             // Коэффициент аннуитета
             decimal annuityRatio = mounthlyInterest +
                 (mounthlyInterest /
-                Convert.ToDecimal((Math.Pow(1 + Convert.ToDouble(mounthlyInterest), paymentsNumber)) - 1));
+                Convert.ToDecimal((Math.Pow((1 + Convert.ToDouble(mounthlyInterest)), paymentsNumber)) - 1));
 
 
             // Ежемесячный аннуитетный платёж
@@ -69,18 +69,17 @@ namespace WebAnnuityCalculator.Controllers
                 // Часть выплаты, идущая на погашение основного долга
                 payment.BodyPayment = annuityPayment - payment.InterestPayment;
 
-                loanBalance = loanBalance - annuityPayment;
+                loanBalance = (loanBalance - annuityPayment)*(1 + mounthlyInterest);
                 payment.LoanBalance = loanBalance;
                 payment.Date = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(i+1));
                 payment.AnnuityPayment = annuityPayment;
                 payments.Add(payment);
 
                 result.TotalPayments += payment.AnnuityPayment;
-                result.TotalInterest += payment.InterestPayment;
-                result.TotalBody += payment.BodyPayment;
             }
 
             result.Payments = payments;
+            result.Overpayment = result.TotalPayments - loanAmount;
 
             return View(result);
         }
