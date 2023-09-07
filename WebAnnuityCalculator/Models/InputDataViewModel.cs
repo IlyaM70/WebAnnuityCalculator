@@ -15,7 +15,7 @@ namespace WebAnnuityCalculator.Models
 
         [Required(ErrorMessage = "Введите ставку")]
         [Range(1, 1000, ErrorMessage = "Ставка должна быть от 1 до 1000 процентов")]
-        public double LoanRate { get; set; }
+        public decimal LoanRate { get; set; }
 
     }
 }

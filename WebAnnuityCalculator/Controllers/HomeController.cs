@@ -34,23 +34,24 @@ namespace WebAnnuityCalculator.Controllers
 
             decimal loanAmount = inputData.LoanAmount;
             // Годовая процентная ставка
-            double yearlyInterest = inputData.LoanRate / 100;
+            decimal yearlyInterest = inputData.LoanRate / 100;
             // Месячная процентная ставка по кредиту 
-            double mounthlyInterest = yearlyInterest / 12;
+            decimal mounthlyInterest = yearlyInterest / 12;
             // Количество периодов, в течение которых выплачивается кредит.
             int paymentsNumber = inputData.LoanTerm;
 
 
             // Коэффициент аннуитета
-            double annuityRatio = mounthlyInterest +
-                (mounthlyInterest / ((Math.Pow(1 + mounthlyInterest, paymentsNumber)) - 1));
+            decimal annuityRatio = mounthlyInterest +
+                (mounthlyInterest /
+                Convert.ToDecimal((Math.Pow(1 + Convert.ToDouble(mounthlyInterest), paymentsNumber)) - 1));
 
 
             // Ежемесячный аннуитетный платёж
-            decimal annuityPayment = Convert.ToDecimal(annuityRatio) * loanAmount;
+            decimal annuityPayment = annuityRatio * loanAmount;
 
             // Остаток задолженности 
-            decimal loanBalance = loanAmount*(1 + Convert.ToDecimal(mounthlyInterest));
+            decimal loanBalance = loanAmount*(1 + mounthlyInterest);
 
             ResultViewModel result = new ResultViewModel();
 
@@ -64,7 +65,7 @@ namespace WebAnnuityCalculator.Controllers
 
                 Payment payment = new Payment();
                 // Начисленные проценты
-                payment.InterestPayment = (loanBalance * Convert.ToDecimal(yearlyInterest)) / 12;
+                payment.InterestPayment = (loanBalance * yearlyInterest) / 12;
                 // Часть выплаты, идущая на погашение основного долга
                 payment.BodyPayment = annuityPayment - payment.InterestPayment;
 
