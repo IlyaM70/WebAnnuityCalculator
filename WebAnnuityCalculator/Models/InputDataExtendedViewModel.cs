@@ -10,7 +10,7 @@ namespace WebAnnuityCalculator.Models
 
         [Required(ErrorMessage = "Введите cрок займа")]
         [RegularExpression("([0-9][0-9]*)", ErrorMessage = "Введите целое число больше 0")]
-        [Range(1, 600, ErrorMessage = "Cрок займа должен быть от 1 до 600 месяцев")]
+        [Range(1, 100, ErrorMessage = "Cрок займа должен быть от 1 до 100 дней")]
         public int LoanTerm { get; set; }
 
         [Required(ErrorMessage = "Введите шаг платежа")]
