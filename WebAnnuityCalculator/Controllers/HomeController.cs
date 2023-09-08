@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using WebAnnuityCalculator.Models;
 
@@ -30,8 +31,7 @@ namespace WebAnnuityCalculator.Controllers
 
         public IActionResult Result(InputDataViewModel inputData)
         {
-            List<Payment> payments = new List<Payment>();
-
+            // Сумма долга
             decimal loanAmount = inputData.LoanAmount;
             // Годовая процентная ставка
             decimal yearlyInterest = inputData.LoanRate / 100;
@@ -40,49 +40,7 @@ namespace WebAnnuityCalculator.Controllers
             // Количество периодов, в течение которых выплачивается кредит.
             int paymentsNumber = inputData.LoanTerm;
 
-
-            // Коэффициент аннуитета
-            decimal annuityRatio = mounthlyInterest +
-                (mounthlyInterest /
-                Convert.ToDecimal((Math.Pow((1 + Convert.ToDouble(mounthlyInterest)), paymentsNumber)) - 1));
-
-
-            // Ежемесячный аннуитетный платёж
-            decimal annuityPayment = annuityRatio * loanAmount;
-
-            // Остаток задолженности 
-            decimal loanBalance = loanAmount*(1 + mounthlyInterest);
-
-            ResultViewModel result = new ResultViewModel();
-
-            for (int i = 0; i < paymentsNumber; i++)
-            {
-                // если остаток меньше месячного платежа
-                if (loanBalance < annuityPayment)
-                {
-                   annuityPayment = loanBalance;
-                }
-
-                Payment payment = new Payment();
-                // Начисленные проценты
-                payment.InterestPayment = (loanBalance * yearlyInterest) / 12;
-                // Часть выплаты, идущая на погашение основного долга
-                payment.BodyPayment = annuityPayment - payment.InterestPayment;
-                // Записать остаток долга
-                loanBalance = (loanBalance - annuityPayment);
-                payment.LoanBalance = loanBalance;
-                // Начислить проценты на остаток долга
-                loanBalance *= (1 + mounthlyInterest);
-
-                payment.Date = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(i+1));
-                payment.AnnuityPayment = annuityPayment;
-                payments.Add(payment);
-
-                result.TotalPayments += payment.AnnuityPayment;
-            }
-
-            result.Payments = payments;
-            result.Overpayment = result.TotalPayments - loanAmount;
+            ResultViewModel result = Calculate(loanAmount,mounthlyInterest,paymentsNumber,0,true);
 
             return View(result);
         }
@@ -106,19 +64,25 @@ namespace WebAnnuityCalculator.Controllers
 
         public IActionResult ResultExtended(InputDataExtendedViewModel inputData)
         {
-            List<Payment> payments = new List<Payment>();
-
+            // Сумма долга
             decimal loanAmount = inputData.LoanAmount;
             // Дневная процентная ставка
             decimal dailyInterest = inputData.LoanRate / 100;
-            //Годовая процентная ставка
-            decimal yearlyInterest = dailyInterest * 365;
             // Количество периодов, в течение которых выплачивается кредит.
            int paymentsNumber = inputData.LoanTerm / inputData.PaymentStep;
             // Ставка за период
             decimal stepInterest = dailyInterest * inputData.PaymentStep;
+            // Шаг платежей
+            int paymentStep = inputData.PaymentStep;
 
+            ResultViewModel result = Calculate(loanAmount,stepInterest,paymentsNumber,paymentStep,false);
 
+            return View("Result",result);
+        }
+
+        private ResultViewModel Calculate(decimal loanAmount, decimal stepInterest,
+                                         int paymentsNumber, int paymentStep, bool payMonthly)
+        {
             // Коэффициент аннуитета
             decimal annuityRatio = stepInterest +
                 (stepInterest /
@@ -132,6 +96,7 @@ namespace WebAnnuityCalculator.Controllers
             decimal loanBalance = loanAmount * (1 + stepInterest);
 
             ResultViewModel result = new ResultViewModel();
+            List<Payment> payments = new List<Payment>();
 
             for (int i = 0; i < paymentsNumber; i++)
             {
@@ -152,7 +117,11 @@ namespace WebAnnuityCalculator.Controllers
                 // Начислить проценты на остаток долга
                 loanBalance *= (1 + stepInterest);
 
-                payment.Date = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(i*inputData.PaymentStep));
+                if (payMonthly)
+                    payment.Date = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(i + 1));
+                else
+                    payment.Date = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(i * paymentStep));
+
                 payment.AnnuityPayment = annuityPayment;
                 payments.Add(payment);
 
@@ -162,8 +131,10 @@ namespace WebAnnuityCalculator.Controllers
             result.Payments = payments;
             result.Overpayment = result.TotalPayments - loanAmount;
 
-            return View("Result",result);
+            return result;
         }
+
+
 
 
 
