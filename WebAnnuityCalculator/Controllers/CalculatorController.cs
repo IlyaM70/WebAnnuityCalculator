@@ -5,75 +5,67 @@ using WebAnnuityCalculator.Models;
 
 namespace WebAnnuityCalculator.Controllers
 {
-    public class HomeController : Controller
+    public class CalculatorController : Controller
     {
-        public HomeController()
+        public CalculatorController()
         {
 
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Calculator(bool isExtended = false)
         {
-            return View();
+            CalculatorViewModel calculatorVM = new CalculatorViewModel();
+            if (isExtended)
+            {
+                calculatorVM.IsExtended = true;
+            }
+            return View(calculatorVM);
         }
 
         [HttpPost]
-        public IActionResult Index(InputDataViewModel inputData)
+        public IActionResult Calculator(CalculatorViewModel calculatorVM)
         {
             if(ModelState.IsValid)
             {
-                return RedirectToAction("Result", inputData);
+                if (calculatorVM.IsExtended)
+                {
+                    return RedirectToAction("ResultExtended", calculatorVM);
+                }
+                return RedirectToAction("Result", calculatorVM);
             }
             
-            return View(inputData);
+            return View(calculatorVM);
         }
 
-        public IActionResult Result(InputDataViewModel inputData)
+        public IActionResult Result(CalculatorViewModel calculatorVM)
         {
             // Сумма долга
-            decimal loanAmount = inputData.LoanAmount;
+            decimal loanAmount = calculatorVM.LoanAmount;
             // Годовая процентная ставка
-            decimal yearlyInterest = inputData.LoanRate / 100;
+            decimal yearlyInterest = calculatorVM.LoanRate / 100;
             // Месячная процентная ставка по кредиту 
             decimal mounthlyInterest = yearlyInterest / 12;
             // Количество периодов, в течение которых выплачивается кредит.
-            int paymentsNumber = inputData.LoanTerm;
+            int paymentsNumber = calculatorVM.LoanTerm;
 
             ResultViewModel result = Calculate(loanAmount,mounthlyInterest,paymentsNumber,0,true);
 
             return View(result);
         }
 
-        [HttpGet]
-        public IActionResult CalculatorExtended()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult CalculatorExtended(InputDataExtendedViewModel inputData)
-        {
-            if (ModelState.IsValid)
-            {
-                return RedirectToAction("ResultExtended", inputData);
-            }
-
-            return View(inputData);
-        }
-
-        public IActionResult ResultExtended(InputDataExtendedViewModel inputData)
+        public IActionResult ResultExtended(CalculatorViewModel calculatorVM)
         {
             // Сумма долга
-            decimal loanAmount = inputData.LoanAmount;
+            decimal loanAmount = calculatorVM.LoanAmount;
             // Дневная процентная ставка
-            decimal dailyInterest = inputData.LoanRate / 100;
+            decimal dailyInterest = calculatorVM.LoanRate / 100;
             // Количество периодов, в течение которых выплачивается кредит.
-           int paymentsNumber = inputData.LoanTerm / inputData.PaymentStep;
+           int paymentsNumber = calculatorVM.LoanTerm / calculatorVM.PaymentStep;
             // Ставка за период
-            decimal stepInterest = dailyInterest * inputData.PaymentStep;
+            decimal stepInterest = dailyInterest * calculatorVM.PaymentStep;
             // Шаг платежей
-            int paymentStep = inputData.PaymentStep;
+            int paymentStep = calculatorVM.PaymentStep;
 
             ResultViewModel result = Calculate(loanAmount,stepInterest,paymentsNumber,paymentStep,false);
 
@@ -134,14 +126,6 @@ namespace WebAnnuityCalculator.Controllers
             return result;
         }
 
-
-
-
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
