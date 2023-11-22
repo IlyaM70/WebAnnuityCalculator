@@ -7,7 +7,7 @@ namespace WebAnnuityCalculator.Services.CalculatorService
         public ResultViewModel Calculate(decimal loanAmount, decimal stepInterest,
                                          int paymentsNumber, int paymentStep, bool payMonthly)
         {
-            // Коэффициент аннуитета
+            //Коэффициент аннуитета
             decimal annuityRatio = stepInterest +
                 (stepInterest /
                 Convert.ToDecimal((Math.Pow((1 + Convert.ToDouble(stepInterest)), paymentsNumber)) - 1));

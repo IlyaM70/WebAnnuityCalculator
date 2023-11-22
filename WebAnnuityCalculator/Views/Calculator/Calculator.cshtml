@@ -28,8 +28,8 @@
                     <span asp-validation-for="LoanTermMonths" class="text-danger mt-2"></span>
 
                     <label class="mt-3 form-label">Ставка в год</label>
-                    <input class="form-control" type="number" asp-for="LoanRate" />
-                    <span asp-validation-for="LoanRate" class="text-danger mt-2"></span>
+                    <input class="form-control" type="number" asp-for="LoanRateYearly" />
+                    <span asp-validation-for="LoanRateYearly" class="text-danger mt-2"></span>
                 }
                 else
                 {
@@ -39,12 +39,14 @@
                     <span asp-validation-for="LoanTermDays" class="text-danger mt-2"></span>
 
                     <label class="mt-3 form-label">Ставка в день</label>
-                    <input class="form-control" type="number" asp-for="LoanRate" />
-                    <span asp-validation-for="LoanRate" class="text-danger mt-2"></span>
+                    <input class="form-control" type="number" asp-for="LoanRateDayly" />
+                    <span asp-validation-for="LoanRateDayly" class="text-danger mt-2"></span>
 
                     <label class="mt-3 form-label">Шаг платежа в днях</label>
                     <input class="form-control" type="number" asp-for="PaymentStep" />
                     <span asp-validation-for="PaymentStep" class="text-danger mt-2"></span>
+
+                    <input type="hidden" asp-for="IsExtended" value="true"/>
                 }
 
                 <button class="mt-3 btn btn-primary" type="submit">Рассчитать</button>
