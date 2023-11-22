@@ -49,7 +49,7 @@ namespace WebAnnuityCalculator.Controllers
             // Месячная процентная ставка по кредиту 
             decimal mounthlyInterest = yearlyInterest / 12;
             // Количество периодов, в течение которых выплачивается кредит.
-            int paymentsNumber = calculatorVM.LoanTerm;
+            int paymentsNumber = calculatorVM.LoanTermMonths;
 
             ResultViewModel result = 
                 _calculatorService.Calculate(loanAmount,mounthlyInterest,paymentsNumber,0,true);
@@ -64,7 +64,7 @@ namespace WebAnnuityCalculator.Controllers
             // Дневная процентная ставка
             decimal dailyInterest = calculatorVM.LoanRate / 100;
             // Количество периодов, в течение которых выплачивается кредит.
-           int paymentsNumber = calculatorVM.LoanTerm / calculatorVM.PaymentStep;
+           int paymentsNumber = calculatorVM.LoanTermDays / calculatorVM.PaymentStep;
             // Ставка за период
             decimal stepInterest = dailyInterest * calculatorVM.PaymentStep;
             // Шаг платежей
