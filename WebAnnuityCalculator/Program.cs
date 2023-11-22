@@ -1,7 +1,10 @@
+using WebAnnuityCalculator.Services.CalculatorService;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<ICalculatorService,CalculatorService>();
 
 var app = builder.Build();
 
