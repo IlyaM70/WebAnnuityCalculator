@@ -11,7 +11,7 @@ namespace WebAnnuityCalculator.Services.CalculatorService
         /// Рассчитать аннуитетные платежи
         /// </summary>
         /// <param name="loanAmount">Сумма займа</param>
-        /// <param name="stepInterest">Процентная ставка за период</param>
+        /// <param name="stepInterest">Процентная ставка за период в виде десятичной дроби</param>
         /// <param name="paymentsNumber">Количество периодов, в течение которых выплачивается кредит</param>
         /// <param name="paymentStep">Шаг платежей</param>
         /// <param name="payMonthly">Являются ли платежи ежемесячными</param>

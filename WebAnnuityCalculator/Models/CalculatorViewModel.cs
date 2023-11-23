@@ -2,32 +2,35 @@
 
 namespace WebAnnuityCalculator.Models
 {
+    /// <summary>
+    /// View Model калькулятора и раширеного калькулятора
+    /// </summary>
     public class CalculatorViewModel
     {
         /// <summary>
         /// Сумма займа
         /// </summary>
         [Required(ErrorMessage = "Введите сумму займа")]
-        [Range(1000, 100000000, ErrorMessage = "Сумма займа должна быть от 1 000 до 100 000 000")]
-        public decimal LoanAmount { get; set; } = 100000000;
+        [Range(1000, 10000000, ErrorMessage = "Сумма займа должна быть от 1 000 до 10 000 000")]
+        public decimal LoanAmount { get; set; } = 10000000;
 
         /// <summary>
         /// Cрок займа в месяцах
         /// </summary>
         [Required(ErrorMessage = "Введите cрок займа в месяцах")]
         [RegularExpression("([0-9][0-9]*)", ErrorMessage = "Введите целое число больше 0")]
-        [Range(1, 1095, ErrorMessage = "Cрок займа должен быть от 1 до 1095 дней")]
-        // Максимум 3 года
-        public int LoanTermDays { get; set; } = 1095;
+        [Range(1, 10950, ErrorMessage = "Cрок займа должен быть от 1 до 10950 дней")]
+        // Максимум 30 лет
+        public int LoanTermDays { get; set; } = 10950;
 
         /// <summary>
         ///  Cрок займа в днях
         /// </summary>
         [Required(ErrorMessage = "Введите cрок займа в днях")]
         [RegularExpression("([0-9][0-9]*)", ErrorMessage = "Введите целое число больше 0")]
-        [Range(1, 36, ErrorMessage = "Cрок займа должен быть от 1 до 36  месяцев")]
-        // Максимум 3 года
-        public int LoanTermMonths { get; set; } = 36;
+        [Range(1, 360, ErrorMessage = "Cрок займа должен быть от 1 до 360  месяцев")]
+        // Максимум 30 лет
+        public int LoanTermMonths { get; set; } = 360;
 
         /// <summary>
         /// Шаг платежа в днях
@@ -49,6 +52,7 @@ namespace WebAnnuityCalculator.Models
         /// </summary>
         [Required(ErrorMessage = "Введите ставку")]
         [Range(0.001, 0.14, ErrorMessage = "Ставка должна быть от 0.001 до 0.14 процентов")]
+        // Масимум 50% в год
         public decimal LoanRateDayly { get; set; } = 0.14M;
 
         /// <summary>

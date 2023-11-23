@@ -18,6 +18,7 @@ namespace WebAnnuityCalculator.Services.CalculatorService
 
             // Остаток задолженности 
             decimal loanBalance = loanAmount * (1 + stepInterest);
+            
 
             ResultViewModel result = new ResultViewModel();
             List<Payment> payments = new List<Payment>();
@@ -31,13 +32,17 @@ namespace WebAnnuityCalculator.Services.CalculatorService
                 }
 
                 Payment payment = new Payment();
-                // Начисленные проценты
-                payment.InterestPayment = loanBalance * stepInterest;
-                // Часть выплаты, идущая на погашение основного долга
-                payment.BodyPayment = annuityPayment - payment.InterestPayment;
+
                 // Записать остаток долга
                 loanBalance = (loanBalance - annuityPayment);
                 payment.LoanBalance = loanBalance;
+
+                //Часть выплаты, идущая на погашение процентов
+                payment.InterestPayment = loanBalance * stepInterest;
+                // Часть выплаты, идущая на погашение основного долга
+                payment.BodyPayment = annuityPayment - payment.InterestPayment;
+
+                
                 // Начислить проценты на остаток долга
                 loanBalance *= (1 + stepInterest);
 
