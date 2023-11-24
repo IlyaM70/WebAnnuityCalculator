@@ -1,5 +1,8 @@
 ﻿namespace WebAnnuityCalculator.Models
 {
+    /// <summary>
+    /// View Model результата стандартного или расширенного калькулятора
+    /// </summary>
     public class ResultViewModel
     {
         /// <summary>

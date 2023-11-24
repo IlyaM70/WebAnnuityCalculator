@@ -16,20 +16,20 @@ namespace WebAnnuityCalculator.Models
 
         /// <summary>
         /// Cрок займа в месяцах
+        /// Максимум 30 лет
         /// </summary>
         [Required(ErrorMessage = "Введите cрок займа в месяцах")]
         [RegularExpression("([0-9][0-9]*)", ErrorMessage = "Введите целое число больше 0")]
-        [Range(1, 10950, ErrorMessage = "Cрок займа должен быть от 1 до 10950 дней")]
-        // Максимум 30 лет
+        [Range(1, 10950, ErrorMessage = "Cрок займа должен быть от 1 до 10950 (30 лет) дней")]
         public int LoanTermDays { get; set; } = 1;
 
         /// <summary>
         ///  Cрок займа в днях
+        ///  Максимум 30 лет
         /// </summary>
         [Required(ErrorMessage = "Введите cрок займа в днях")]
         [RegularExpression("([0-9][0-9]*)", ErrorMessage = "Введите целое число больше 0")]
-        [Range(1, 360, ErrorMessage = "Cрок займа должен быть от 1 до 360  месяцев")]
-        // Максимум 30 лет
+        [Range(1, 360, ErrorMessage = "Cрок займа должен быть от 1 до 360 (30 лет)  месяцев")]
         public int LoanTermMonths { get; set; } = 1;
 
         /// <summary>
