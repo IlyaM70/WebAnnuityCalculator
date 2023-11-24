@@ -35,11 +35,11 @@ namespace WebAnnuityCalculator.Controllers
                     return RedirectToAction("ResultExtended", calculatorVM);
                 }
                 return RedirectToAction("Result", calculatorVM);
-            }
-            
+            }            
             return View(calculatorVM);
         }
 
+        //Результат стандартного калькулятора
         public IActionResult Result(CalculatorViewModel calculatorVM)
         {
             // Сумма долга
@@ -57,6 +57,7 @@ namespace WebAnnuityCalculator.Controllers
             return View(result);
         }
 
+        //Результат расширенного калькулятора
         public IActionResult ResultExtended(CalculatorViewModel calculatorVM)
         {
             // Сумма долга
@@ -74,9 +75,7 @@ namespace WebAnnuityCalculator.Controllers
                 _calculatorService.Calculate(loanAmount,stepInterest,paymentsNumber,paymentStep,false);
             
             return View("Result",result);
-        }
-
-        
+        }      
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

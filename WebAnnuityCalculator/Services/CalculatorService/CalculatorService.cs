@@ -8,15 +8,15 @@ namespace WebAnnuityCalculator.Services.CalculatorService
                                          int paymentsNumber, int paymentStep, bool payMonthly)
         {
             //Коэффициент аннуитета
-            decimal annuityRatio = stepInterest +
-                (stepInterest /
-                Convert.ToDecimal((Math.Pow((1 + Convert.ToDouble(stepInterest)), paymentsNumber)) - 1));
+            decimal annuityRatio = stepInterest + (stepInterest/
+                Convert.ToDecimal((Math.Pow((1 + Convert.ToDouble(stepInterest)),
+                paymentsNumber)) - 1));
 
 
             //Аннуитетный платёж за период
             decimal annuityPayment = annuityRatio * loanAmount;
 
-            // Остаток задолженности 
+            // Остаток задолженности, начислить проценты за первый месяц 
             decimal loanBalance = loanAmount * (1 + stepInterest);
             
 
